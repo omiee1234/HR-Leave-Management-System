@@ -24,22 +24,22 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       // Connect to Django JWT Login View
-      const response = await axios.post('http://localhost:8000/api/auth/login/', { email, password });
+      const response = await axios.post('https://hr-leave-management-system-2.onrender.com/api/auth/login/', { email, password });
       const { access, user: userProfile } = response.data;
-      
+
       setToken(access);
       setUser(userProfile);
-      
+
       localStorage.setItem('token', access);
       localStorage.setItem('user', JSON.stringify(userProfile));
-      
+
       axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
       return { success: true, role: userProfile.role };
     } catch (error) {
       console.error("Login attempt failed:", error);
-      const message = error.response?.data?.detail || 
-                      error.response?.data?.non_field_errors?.[0] || 
-                      "Invalid email or password.";
+      const message = error.response?.data?.detail ||
+        error.response?.data?.non_field_errors?.[0] ||
+        "Invalid email or password.";
       return { success: false, error: message };
     }
   };

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { CheckCircle, XCircle, Clock, Users, ThumbsUp, ThumbsDown, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
-const API = 'http://localhost:8000/api';
+const API = 'https://hr-leave-management-system-2.onrender.com/api';
 
 const statusBadge = (status) => {
   const map = {

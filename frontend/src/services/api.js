@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create central Axios instance pointing to our Django backend API
 const API = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'https://hr-leave-management-system-2.onrender.com/api',
 });
 
 // Intercept requests to dynamically attach JWT token from localStorage
