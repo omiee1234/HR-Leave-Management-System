@@ -32,12 +32,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     ROLE_CHOICES = (
         ('employee', 'Employee'),
+        ('team_leader', 'Team Leader'),
         ('manager', 'Manager'),
     )
 
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='employee')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employee')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)

@@ -42,6 +42,8 @@ const MyLeaves = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
+      case 'TL_Approved':
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
       case 'Approved':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
       case 'Rejected':

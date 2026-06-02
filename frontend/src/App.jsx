@@ -11,12 +11,15 @@ import MyLeaves from './pages/MyLeaves';
 import ManagerDashboard from './pages/ManagerDashboard';
 import LeaveRequests from './pages/LeaveRequests';
 import EmployeeBalances from './pages/EmployeeBalances';
+import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 
 // Home helper component that redirects active authenticated sessions
 const HomeRedirect = () => {
   const { user } = React.useContext(AuthContext);
   if (!user) return <Navigate to="/login" replace />;
-  return <Navigate to={user.role === 'manager' ? '/manager' : '/employee'} replace />;
+  if (user.role === 'manager') return <Navigate to="/manager" replace />;
+  if (user.role === 'team_leader') return <Navigate to="/tl" replace />;
+  return <Navigate to="/employee" replace />;
 };
 
 function App() {
@@ -57,6 +60,16 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['employee']}>
                     <MyLeaves />
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* Securing Team Leader features */}
+              <Route 
+                path="/tl" 
+                element={
+                  <ProtectedRoute allowedRoles={['team_leader']}>
+                    <TeamLeaderDashboard />
                   </ProtectedRoute>
                 } 
               />

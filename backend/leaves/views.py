@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from django.db import transaction
 from .models import LeaveBalance, LeaveRequest
 from .serializers import LeaveBalanceSerializer, LeaveRequestSerializer
-from .permissions import IsEmployee, IsManager
+from .permissions import IsEmployee, IsManager, IsTeamLeader
 
 # ==========================================
 # EMPLOYEE API VIEWS
@@ -103,8 +103,8 @@ class ApproveLeaveView(APIView):
         except LeaveRequest.DoesNotExist:
             return Response({"error": "Leave request not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        if leave.status != 'Pending':
-            return Response({"error": "Only pending leave requests can be approved."}, status=status.HTTP_400_BAD_REQUEST)
+        if leave.status != 'TL_Approved':
+            return Response({"error": "Only TL Approved leave requests can be approved by HR."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             with transaction.atomic():
@@ -178,4 +178,84 @@ class ManagerBalancesView(APIView):
     def get(self, request):
         balances = LeaveBalance.objects.all().order_by('user__name')
         serializer = LeaveBalanceSerializer(balances, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+# ==========================================
+# TEAM LEADER API VIEWS
+# ==========================================
+
+class TeamLeaderStatsView(APIView):
+    """
+    GET /api/tl/stats/
+    """
+    permission_classes = [IsTeamLeader]
+
+    def get(self, request):
+        leaves = LeaveRequest.objects.all()
+        stats = {
+            "pending": leaves.filter(status='Pending').count(),
+            "tl_approved": leaves.filter(status='TL_Approved').count(),
+            "fully_approved": leaves.filter(status='Approved').count(),
+            "rejected": leaves.filter(status='Rejected').count(),
+        }
+        return Response(stats, status=status.HTTP_200_OK)
+
+class TeamLeaderLeaveListView(APIView):
+    """
+    GET /api/tl/leaves/
+    """
+    permission_classes = [IsTeamLeader]
+
+    def get(self, request):
+        leaves = LeaveRequest.objects.all().order_by('-applied_at')
+        serializer = LeaveRequestSerializer(leaves, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TeamLeaderApproveLeaveView(APIView):
+    """
+    PUT /api/tl/approve/<id>/
+    """
+    permission_classes = [IsTeamLeader]
+
+    def put(self, request, pk):
+        try:
+            leave = LeaveRequest.objects.get(pk=pk)
+        except LeaveRequest.DoesNotExist:
+            return Response({"error": "Leave request not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if leave.status != 'Pending':
+            return Response({"error": "Only pending leave requests can be approved by TL."}, status=status.HTTP_400_BAD_REQUEST)
+
+        leave.status = 'TL_Approved'
+        leave.approved_by = request.user
+        leave.save()
+
+        serializer = LeaveRequestSerializer(leave)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TeamLeaderRejectLeaveView(APIView):
+    """
+    PUT /api/tl/reject/<id>/
+    """
+    permission_classes = [IsTeamLeader]
+
+    def put(self, request, pk):
+        try:
+            leave = LeaveRequest.objects.get(pk=pk)
+        except LeaveRequest.DoesNotExist:
+            return Response({"error": "Leave request not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if leave.status != 'Pending':
+            return Response({"error": "Only pending leave requests can be rejected by TL."}, status=status.HTTP_400_BAD_REQUEST)
+
+        rejection_reason = request.data.get('rejection_reason')
+        if not rejection_reason or rejection_reason.strip() == "":
+            return Response({"rejection_reason": ["Rejection reason is required."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        leave.status = 'Rejected'
+        leave.rejection_reason = rejection_reason.strip()
+        leave.approved_by = request.user
+        leave.save()
+
+        serializer = LeaveRequestSerializer(leave)
         return Response(serializer.data, status=status.HTTP_200_OK)

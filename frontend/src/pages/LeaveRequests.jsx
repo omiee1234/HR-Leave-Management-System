@@ -102,6 +102,8 @@ const LeaveRequests = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
+      case 'TL_Approved':
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
       case 'Approved':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
       case 'Rejected':
@@ -177,7 +179,7 @@ const LeaveRequests = () => {
 
         {/* Filters buttons */}
         <div className="flex flex-wrap gap-1.5 lg:col-span-2 lg:justify-end">
-          {['All', 'Pending', 'Approved', 'Rejected', 'Cancelled'].map((status) => (
+          {['All', 'Pending', 'TL_Approved', 'Approved', 'Rejected', 'Cancelled'].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
@@ -270,7 +272,7 @@ const LeaveRequests = () => {
 
                     {/* Action buttons (Approve/Reject) */}
                     <td className="px-8 py-5 text-right">
-                      {leave.status === 'Pending' ? (
+                      {leave.status === 'TL_Approved' ? (
                         <div className="flex gap-2 justify-end">
                           <button
                             onClick={() => handleApprove(leave.id)}

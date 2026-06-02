@@ -49,10 +49,16 @@ const Navbar = () => {
                 My Leaves
               </Link>
             </>
+          ) : user.role === 'team_leader' ? (
+            <>
+              <Link to="/tl" className={linkClass('/tl')}>
+                TL Dashboard
+              </Link>
+            </>
           ) : (
             <>
               <Link to="/manager" className={linkClass('/manager')}>
-                Dashboard
+                HR Dashboard
               </Link>
               <Link to="/manager/requests" className={linkClass('/manager/requests')}>
                 Leave Requests

@@ -28,7 +28,7 @@ const ManagerDashboard = () => {
 
       // Compute statistics based on database records
       const counts = allLeaves.reduce((acc, curr) => {
-        if (curr.status === 'Pending') acc.pending++;
+        if (curr.status === 'TL_Approved') acc.pending++;
         else if (curr.status === 'Approved') acc.approved++;
         else if (curr.status === 'Rejected') acc.rejected++;
         return acc;
@@ -92,6 +92,8 @@ const ManagerDashboard = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
+      case 'TL_Approved':
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
       case 'Approved':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
       case 'Rejected':
@@ -103,7 +105,7 @@ const ManagerDashboard = () => {
     }
   };
 
-  const pendingLeaves = leaves.filter(l => l.status === 'Pending').slice(0, 5);
+  const pendingLeaves = leaves.filter(l => l.status === 'TL_Approved').slice(0, 5);
 
   if (loading && leaves.length === 0) {
     return (

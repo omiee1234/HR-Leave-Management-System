@@ -30,6 +30,7 @@ class LeaveRequest(models.Model):
 
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
+        ('TL_Approved', 'TL Approved'),
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
         ('Cancelled', 'Cancelled'),

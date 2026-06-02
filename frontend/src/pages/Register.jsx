@@ -139,7 +139,8 @@ const Register = () => {
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 px-4 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200 cursor-pointer"
               >
                 <option value="employee">Employee</option>
-                <option value="manager">Manager</option>
+                <option value="team_leader">Team Leader</option>
+                <option value="manager">HR Manager</option>
               </select>
               {errors.role && <p className="text-xs text-rose-400 mt-1">{errors.role[0]}</p>}
             </div>

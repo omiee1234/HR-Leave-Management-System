@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     EmployeeBalanceView, ApplyLeaveView, EmployeeLeaveListView, CancelLeaveView,
-    ManagerLeaveListView, ApproveLeaveView, RejectLeaveView, ManagerBalancesView
+    ManagerLeaveListView, ApproveLeaveView, RejectLeaveView, ManagerBalancesView,
+    TeamLeaderStatsView, TeamLeaderLeaveListView, TeamLeaderApproveLeaveView, TeamLeaderRejectLeaveView
 )
 
 urlpatterns = [
@@ -16,4 +17,10 @@ urlpatterns = [
     path('manager/approve/<int:pk>/', ApproveLeaveView.as_view(), name='manager_approve_leave'),
     path('manager/reject/<int:pk>/', RejectLeaveView.as_view(), name='manager_reject_leave'),
     path('manager/balances/', ManagerBalancesView.as_view(), name='manager_balances'),
+
+    # Team Leader Endpoints
+    path('tl/stats/', TeamLeaderStatsView.as_view(), name='tl_stats'),
+    path('tl/leaves/', TeamLeaderLeaveListView.as_view(), name='tl_leaves'),
+    path('tl/approve/<int:pk>/', TeamLeaderApproveLeaveView.as_view(), name='tl_approve_leave'),
+    path('tl/reject/<int:pk>/', TeamLeaderRejectLeaveView.as_view(), name='tl_reject_leave'),
 ]
