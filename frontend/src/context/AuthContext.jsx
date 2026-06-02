@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password, role) => {
     try {
-      await axios.post('http://localhost:8000/api/auth/register/', { name, email, password, role });
+      await axios.post('https://hr-leave-management-system-2.onrender.com/api/auth/register/', { name, email, password, role });
       return { success: true };
     } catch (error) {
       console.error("Registration attempt failed:", error);
